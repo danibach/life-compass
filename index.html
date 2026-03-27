@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Life Compass Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; }
+        body { background-color: var(--ios-bg); -webkit-tap-highlight-color: transparent; }
+        
+        /* Venn Styling */
+        .venn-circle { mix-blend-mode: multiply; opacity: 0.7; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Label Positioning - Higher Z-Index to stay on top */
+        .iki-label {
+            position: absolute;
+            width: 100px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 11px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 3x3 Grid Styling */
+        .prog-0 { border-left: 4px solid #FF3B30; background-color: white; }
+        .prog-50 { border-left: 4px solid #FFCC00; background-color: #FFFBEB; }
+        .prog-100 { border-left: 4px solid #4CD964; background-color: #F0FDF4; }
+
+        input[type="range"].snap-slider {
+            -webkit-appearance: none;
+            height: 8px;
+            background: #E5E5EA;
+            border-radius: 4px;
+        }
+        input[type="range"].snap-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px; height: 20px;
+            background: white; border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 1px solid #D1D1D6;
+        }
+        .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); }
+        textarea { font-size: 16px !important; }
+    </style>
+</head>
+<body class="text-slate-900 font-sans pb-32">
+
+    <header class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-50 px-4 py-4 flex justify-between items-end">
+        <h1 id="tab-title" class="text-2xl font-black tracking-tight">Weekly Tracker</h1>
+        <div class="flex gap-2">
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            </button>
+            <button onclick="toggleEditMode()" id="edit-btn" class="text-sm font-bold text-blue-600 px-4 py-1.5 bg-blue-50 rounded-full">Edit</button>
+        </div>
+    </header>
+
+    <main class="p-4">
+        <section id="ikigai" class="tab-content">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden">
+                <div class="relative w-[300px] h-[340px]">
+                    <svg viewBox="0 0 400 450" class="w-full h-full">
+                        <circle cx="200" cy="110" r="105" fill="#FF3B30" class="venn-circle" />
+                        <circle cx="105" cy="240" r="105" fill="#5AC8FA" class="venn-circle" />
+                        <circle cx="295" cy="240" r="105" fill="#FFCC00" class="venn-circle" />
+                        <circle cx="200" cy="340" r="105" fill="#4CD964" class="venn-circle" />
+                    </svg>
+                    
+                    <div id="label-love" class="iki-label top-[15px] left-1/2 -translate-x-1/2 text-white drop-shadow-md">Love</div>
+                    <div id="label-skills" class="iki-label top-[155px] left-[-10px] text-slate-800">Skills</div>
+                    <div id="label-needs" class="iki-label top-[155px] right-[-10px] text-slate-800">Needs</div>
+                    <div id="label-profit" class="iki-label bottom-[15px] left-1/2 -translate-x-1/2 text-white drop-shadow-md">Profit</div>
+                </div>
+            </div>
+            
+            <div id="iki-edit-fields" class="hidden space-y-3">
+                <input type="text" id="iki-love" placeholder="What you love..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-skills" placeholder="What you're good at..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-needs" placeholder="What the world needs..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-profit" placeholder="What you can be paid for..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
+            </div>
+        </section>
+
+        <section id="attitudes" class="tab-content active">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b">
+                        <tr class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            <th class="p-4 text-left">Habit</th>
+                            <th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attitude-grid" class="divide-y divide-slate-50"></tbody>
+                </table>
+                <div id="add-att-box" class="hidden p-4 bg-slate-50 flex gap-2">
+                    <input type="text" id="new-att-name" placeholder="Focus..." class="flex-1 px-3 py-2 rounded-lg border border-slate-200">
+                    <button onclick="addAttitude()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">Add</button>
+                </div>
+            </div>
+            <button onclick="resetWeeklyTracker()" class="mt-6 w-full py-4 text-red-500 font-bold text-sm bg-white rounded-2xl active:bg-red-50 shadow-sm border border-slate-100">RESET WEEK</button>
+        </section>
+
+        <section id="goals" class="tab-content">
+            <div class="grid grid-cols-[30px_1fr_1fr_1fr] gap-2 mb-2 px-1">
+                <div></div>
+                <div class="text-[9px] font-bold text-center text-slate-400 uppercase">1 Month</div>
+                <div class="text-[9px] font-bold text-center text-slate-400 uppercase">1 Year</div>
+                <div class="text-[9px] font-bold text-center text-slate-400 uppercase">10 Years</div>
+            </div>
+            <div id="goal-matrix" class="space-y-3"></div>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-200 flex justify-around py-4 z-50">
+        <button onclick="showTab('attitudes', 'Weekly Tracker', this)" class="nav-btn flex flex-col items-center gap-1 text-blue-600">
+            <span class="text-[10px] font-black uppercase tracking-tighter">Tracker</span>
+        </button>
+        <button onclick="showTab('ikigai', 'Ikigai Center', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
+            <span class="text-[10px] font-black uppercase tracking-tighter">Ikigai</span>
+        </button>
+        <button onclick="showTab('goals', 'Vision 3x3', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
+            <span class="text-[10px] font-black uppercase tracking-tighter">Vision</span>
+        </button>
+    </nav>
+
+    <script>
+        let editMode = false;
+        let attitudes = JSON.parse(localStorage.getItem('attNames')) || ["Gratitude", "Patience", "Learning"];
+        const cats = ["Perso", "People", "Pro"];
+        const times = ["1M", "1Y", "10Y"];
+
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.getElementById('edit-btn').innerText = editMode ? "Done" : "Edit";
+            document.getElementById('add-att-box').classList.toggle('hidden', !editMode);
+            document.getElementById('iki-edit-fields').classList.toggle('hidden', !editMode);
+            renderAttitudes();
+            renderGoals();
+        }
+
+        function renderAttitudes() {
+            const grid = document.getElementById('attitude-grid');
+            grid.innerHTML = attitudes.map((name, idx) => `
+                <tr class="bg-white">
+                    <td class="p-4 text-xs font-bold text-slate-600 flex items-center gap-2">
+                        ${editMode ? `<button onclick="deleteAtt(${idx})" class="w-5 h-5 bg-red-500 text-white rounded-full text-[10px]">✕</button>` : ''}
+                        ${name}
+                    </td>
+                    ${['mon','tue','wed','thu','fri','sat','sun'].map(d => {
+                        const id = `chk-${name}-${d}`;
+                        return `<td class="p-1"><input type="checkbox" onchange="localStorage.setItem('${id}', this.checked)" ${localStorage.getItem(id)==='true'?'checked':''} class="w-6 h-6 rounded-full border-slate-300 text-blue-600"></td>`;
+                    }).join('')}
+                </tr>
+            `).join('');
+        }
+
+        function renderGoals() {
+            const matrix = document.getElementById('goal-matrix');
+            matrix.innerHTML = cats.map(cat => `
+                <div class="grid grid-cols-[30px_1fr_1fr_1fr] gap-2">
+                    <div class="vertical-text flex items-center justify-center bg-slate-200 rounded-lg text-[8px] font-black text-slate-500 uppercase py-2">${cat}</div>
+                    ${times.map(time => {
+                        const key = `v-${cat}-${time}`;
+                        const prog = localStorage.getItem(key+'-p') || 0;
+                        const text = localStorage.getItem(key+'-t') || '';
+                        return `
+                        <div class="prog-${prog} p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all">
+                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" placeholder="• ..." class="bg-transparent border-none w-full text-[10px] leading-tight h-16 p-0 focus:ring-0 resize-none font-medium text-slate-800">${text}</textarea>
+                            <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="snap-slider w-full mt-2">
+                        </div>`;
+                    }).join('')}
+                </div>
+            `).join('');
+        }
+
+        function updateProgress(key, el) {
+            const val = el.value;
+            localStorage.setItem(key+'-p', val);
+            const card = el.parentElement;
+            card.className = `prog-${val} p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all`;
+        }
+
+        function addAttitude() {
+            const val = document.getElementById('new-att-name').value.trim();
+            if(val) { attitudes.push(val); localStorage.setItem('attNames', JSON.stringify(attitudes)); renderAttitudes(); document.getElementById('new-att-name').value=''; }
+        }
+
+        function deleteAtt(idx) { attitudes.splice(idx,1); localStorage.setItem('attNames', JSON.stringify(attitudes)); renderAttitudes(); }
+
+        function saveIki() {
+            ['love', 'skills', 'needs', 'profit'].forEach(f => {
+                const v = document.getElementById('iki-'+f).value;
+                localStorage.setItem('iki-'+f, v);
+                document.getElementById('label-'+f).innerText = v || f.toUpperCase();
+            });
+        }
+
+        function loadIki() {
+            ['love', 'skills', 'needs', 'profit'].forEach(f => {
+                const v = localStorage.getItem('iki-'+f) || '';
+                document.getElementById('iki-'+f).value = v;
+                document.getElementById('label-'+f).innerText = v || f.toUpperCase();
+            });
+        }
+
+        function resetWeeklyTracker() {
+            if(confirm("Clear all checks?")) {
+                Object.keys(localStorage).filter(k => k.startsWith('chk-')).forEach(k => localStorage.removeItem(k));
+                renderAttitudes();
+            }
+        }
+
+        function showTab(id, title, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => { b.classList.replace('text-blue-600', 'text-slate-400'); });
+            document.getElementById(id).classList.add('active');
+            document.getElementById('tab-title').innerText = title;
+            btn.classList.replace('text-slate-400', 'text-blue-600');
+        }
+
+        function exportData() {
+            const data = JSON.stringify(localStorage);
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'life-compass.json'; a.click();
+        }
+
+        renderAttitudes(); renderGoals(); loadIki();
+    </script>
+</body>
+</html>

@@ -10,12 +10,13 @@
         body { background-color: var(--ios-bg); -webkit-tap-highlight-color: transparent; }
         header { padding-top: env(safe-area-inset-top); }
         nav { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
+        
         .venn-circle { mix-blend-mode: multiply; opacity: 0.7; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 10; }
         
-        /* Fixed Traffic Light States */
+        /* Fixed Traffic Light States with forced background colors */
         .prog-0 { border-left: 4px solid #FF3B30 !important; background-color: #ffffff !important; }
         .prog-50 { border-left: 4px solid #FFCC00 !important; background-color: #FFFBEB !important; }
         .prog-100 { border-left: 4px solid #4CD964 !important; background-color: #F0FDF4 !important; }
@@ -35,9 +36,11 @@
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
             </button>
             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+            
             <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:scale-90 transition-transform">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </button>
+            
             <button onclick="toggleEditMode()" id="edit-btn" class="text-sm font-bold text-blue-600 px-4 py-1.5 bg-blue-50 rounded-full">Edit</button>
         </div>
     </header>
@@ -52,16 +55,19 @@
                         <circle cx="295" cy="240" r="105" fill="#FFCC00" class="venn-circle" />
                         <circle cx="200" cy="340" r="105" fill="#4CD964" class="venn-circle" />
                     </svg>
+                    
                     <div id="label-love" class="iki-label top-[15px] left-1/2 -translate-x-1/2 text-slate-800">Love</div>
                     <div id="label-skills" class="iki-label top-[155px] left-[-10px] text-slate-800">Skills</div>
                     <div id="label-needs" class="iki-label top-[155px] right-[-10px] text-slate-800">Needs</div>
                     <div id="label-profit" class="iki-label bottom-[15px] left-1/2 -translate-x-1/2 text-slate-800">Profit</div>
+
                     <div class="absolute top-[80px] left-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none">passion</div>
                     <div class="absolute top-[80px] right-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none text-right">mission</div>
                     <div class="absolute bottom-[80px] left-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none">profession</div>
                     <div class="absolute bottom-[80px] right-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none text-right">vocation</div>
                 </div>
             </div>
+            
             <div id="iki-edit-fields" class="hidden space-y-3">
                 <input type="text" id="iki-love" placeholder="Love..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
                 <input type="text" id="iki-skills" placeholder="Skills..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
@@ -73,8 +79,10 @@
         <section id="attitudes" class="tab-content active">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="w-full">
-                    <thead class="bg-slate-50 border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                        <tr><th class="p-4 text-left">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr>
+                    <thead class="bg-slate-50 border-b">
+                        <tr class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            <th class="p-4 text-left">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th>
+                        </tr>
                     </thead>
                     <tbody id="attitude-grid" class="divide-y divide-slate-50"></tbody>
                 </table>
@@ -83,7 +91,7 @@
                     <button onclick="addAttitude()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">Add</button>
                 </div>
             </div>
-            <button onclick="resetWeeklyTracker()" class="mt-6 w-full py-4 text-red-500 font-bold text-sm bg-white rounded-2xl active:bg-red-50 shadow-sm border border-slate-100">RESET WEEK</button>
+            <button onclick="resetWeeklyTracker()" class="mt-6 w-full py-4 text-red-500 font-bold text-sm bg-white rounded-2xl active:bg-red-50 shadow-sm border border-slate-100 tracking-tight">RESET WEEKLY TRACKER</button>
         </section>
 
         <section id="goals" class="tab-content">
@@ -157,10 +165,8 @@
         function updateProgress(key, el) {
             const val = el.value;
             localStorage.setItem(key+'-p', val);
-            const card = el.closest('div');
-            // Force reset classes
-            card.classList.remove('prog-0', 'prog-50', 'prog-100');
-            card.classList.add(`prog-${val}`);
+            const card = el.closest('.p-2');
+            card.className = `prog-${val} p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all duration-300`;
         }
 
         function saveIki() {

@@ -33,23 +33,16 @@
         
         .bridge-label { position: absolute; font-size: 13px; font-style: italic; color: #475569; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 700; width: 100px; text-align: center; }
 
-        /* DEEP DIVES SECTION */
-        .deep-dive-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05); }
-        .dd-title { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-        .dd-red { color: #FF3B30; border-left: 4px solid #FF3B30; }
-        .dd-blue { color: #007AFF; border-left: 4px solid #007AFF; }
-        .dd-yellow { color: #FFCC00; border-left: 4px solid #FFCC00; }
-        .dd-green { color: #34C759; border-left: 4px solid #34C759; }
+        /* DEEP DIVES SECTION - Visual Polish */
+        .deep-dive-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s; }
+        .dd-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block; }
+        .dd-red { border-left: 5px solid #FF3B30; }
+        .dd-blue { border-left: 5px solid #007AFF; }
+        .dd-yellow { border-left: 5px solid #FFCC00; }
+        .dd-green { border-left: 5px solid #34C759; }
 
-        /* Goals & Tracker Styles */
-        .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
-        .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
-        .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4; }
-
-        textarea { font-size: 16px !important; resize: none; border: none; background: transparent; width: 100%; }
+        textarea { font-size: 16px !important; border: none; background: transparent; width: 100%; min-height: 80px; resize: none; color: #334155; }
         textarea:focus { outline: none; }
-        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #ddd; border-radius: 5px; margin-top: 8px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: white; border: 1px solid #ccc; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="text-slate-900 font-sans pb-32">
@@ -66,7 +59,7 @@
 
     <main class="p-4">
         <section id="ikigai" class="tab-content">
-            <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[460px]">
+            <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 mb-8 relative flex justify-center items-center overflow-hidden h-[460px]">
                 <div class="relative w-[360px] h-[400px]">
                     <svg viewBox="0 0 400 400" class="w-full h-full">
                         <circle cx="200" cy="115" r="105" fill="#FF6B6B" class="venn-circle" /> 
@@ -87,27 +80,27 @@
                 </div>
             </div>
 
-            <div class="space-y-3 px-1">
-                <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">The Deep Dive</h2>
+            <div class="px-1 pb-10">
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 text-center">Development Area</h2>
                 
                 <div class="deep-dive-card dd-red">
-                    <div class="dd-title pl-3">What I love to do</div>
-                    <textarea id="dd-love" oninput="saveIki()" placeholder="List your passions..." rows="3"></textarea>
+                    <label class="dd-title text-red-500 pl-3">What I love to do</label>
+                    <textarea id="dd-love" oninput="saveIki()" placeholder="Enter details..."></textarea>
                 </div>
 
                 <div class="deep-dive-card dd-blue">
-                    <div class="dd-title pl-3">What I am good at</div>
-                    <textarea id="dd-skills" oninput="saveIki()" placeholder="List your talents..." rows="3"></textarea>
+                    <label class="dd-title text-blue-500 pl-3">What I am good at</label>
+                    <textarea id="dd-skills" oninput="saveIki()" placeholder="Enter details..."></textarea>
                 </div>
 
                 <div class="deep-dive-card dd-yellow">
-                    <div class="dd-title pl-3">What the world needs</div>
-                    <textarea id="dd-needs" oninput="saveIki()" placeholder="List world problems you can solve..." rows="3"></textarea>
+                    <label class="dd-title text-amber-500 pl-3">What the world needs</label>
+                    <textarea id="dd-needs" oninput="saveIki()" placeholder="Enter details..."></textarea>
                 </div>
 
                 <div class="deep-dive-card dd-green">
-                    <div class="dd-title pl-3">What I can be paid for</div>
-                    <textarea id="dd-profit" oninput="saveIki()" placeholder="List potential revenue streams..." rows="3"></textarea>
+                    <label class="dd-title text-emerald-600 pl-3">What I can be paid for</label>
+                    <textarea id="dd-profit" oninput="saveIki()" placeholder="Enter details..."></textarea>
                 </div>
             </div>
         </section>
@@ -122,6 +115,7 @@
                 </table>
             </div>
         </section>
+
         <section id="goals" class="tab-content">
             <div id="goal-matrix" class="space-y-4"></div>
         </section>
@@ -168,28 +162,23 @@
 
         function saveIki() {
             ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                // Save circle text
                 localStorage.setItem('iki-v3-'+f, document.getElementById('label-'+f).innerText);
-                // Save deep dive text
-                localStorage.setItem('dd-text-'+f, document.getElementById('dd-'+f).value);
+                localStorage.setItem('dd-text-v2-'+f, document.getElementById('dd-'+f).value);
             });
         }
 
         function loadIki() {
             ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                // Load circle text
                 const circleVal = localStorage.getItem('iki-v3-'+f);
                 if (circleVal) {
                     const el = document.getElementById('label-'+f);
                     el.innerText = circleVal;
                     autoShrink(el);
                 }
-                // Load deep dive text
-                document.getElementById('dd-'+f).value = localStorage.getItem('dd-text-'+f) || '';
+                document.getElementById('dd-'+f).value = localStorage.getItem('dd-text-v2-'+f) || '';
             });
         }
 
-        // Standard Tracker/Goal rendering logic
         function renderAttitudes() {
             const grid = document.getElementById('attitude-grid');
             grid.innerHTML = attitudes.map((name, idx) => `
@@ -208,7 +197,7 @@
                         const key = `v-${cat}-${time}`;
                         const prog = localStorage.getItem(key+'-p') || "0";
                         const text = localStorage.getItem(key+'-t') || '';
-                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm">
+                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all">
                             <div class="text-[8px] font-black text-slate-400 uppercase mb-1">${cat} • ${time}</div>
                             <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" class="text-slate-900">${text}</textarea>
                             <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="w-full h-1 mt-1">

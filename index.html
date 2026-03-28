@@ -33,9 +33,11 @@
         .venn-circle { mix-blend-mode: multiply; opacity: 0.7; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 10; }
+        .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 10; color: #1e293b; }
         
-        /* Traffic Light Progress Colors */
+        /* Bridge Labels (Passion, Mission, etc) */
+        .bridge-label { position: absolute; font-size: 10px; font-style: italic; color: #94a3b8; text-transform: lowercase; pointer-events: none; }
+
         .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
         .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
         .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4; }
@@ -59,7 +61,7 @@
 
     <main class="p-4">
         <section id="ikigai" class="tab-content">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[380px]">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[400px]">
                 <div class="relative w-[300px] h-[340px]">
                     <svg viewBox="0 0 400 450" class="w-full h-full">
                         <circle cx="200" cy="110" r="105" fill="#FF3B30" class="venn-circle" />
@@ -71,6 +73,11 @@
                     <div id="label-skills" class="iki-label top-[155px] left-[-10px]">Skills</div>
                     <div id="label-needs" class="iki-label top-[155px] right-[-10px]">Needs</div>
                     <div id="label-profit" class="iki-label bottom-[15px] left-1/2 -translate-x-1/2">Profit</div>
+                    
+                    <div class="bridge-label top-[80px] left-[35px]">passion</div>
+                    <div class="bridge-label top-[80px] right-[35px]">mission</div>
+                    <div class="bridge-label bottom-[80px] left-[30px]">profession</div>
+                    <div class="bridge-label bottom-[80px] right-[30px]">vocation</div>
                 </div>
             </div>
             <div id="iki-edit-fields" class="hidden space-y-2">

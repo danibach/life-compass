@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Life Compass">
@@ -33,9 +34,22 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Fixed Label Z-Indexing */
-        .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 40; color: #1e293b; }
-        .bridge-label { position: absolute; font-size: 10px; font-style: italic; color: #64748b; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 600; }
+        /* Main Labels */
+        .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 13px; text-transform: uppercase; pointer-events: none; z-index: 40; color: #1e293b; }
+        
+        /* Bridge Labels - Bolder, Bigger, and Spread Out */
+        .bridge-label { 
+            position: absolute; 
+            font-size: 12px; 
+            font-style: italic; 
+            color: #475569; 
+            text-transform: lowercase; 
+            pointer-events: none; 
+            z-index: 40; 
+            font-weight: 800;
+            width: 80px;
+            text-align: center;
+        }
 
         .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
         .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
@@ -51,17 +65,17 @@
     <header class="flex justify-between items-center">
         <h1 id="tab-title" class="text-xl font-black tracking-tight">Weekly Tracker</h1>
         <div class="flex gap-3">
-            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:opacity-50">
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full">
                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </button>
-            <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full active:opacity-50">Edit</button>
+            <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full">Edit</button>
         </div>
     </header>
 
     <main class="p-4">
         <section id="ikigai" class="tab-content">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[420px]">
-                <div class="relative w-[300px] h-[360px]">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[440px]">
+                <div class="relative w-[320px] h-[380px]">
                     <svg viewBox="0 0 400 450" class="w-full h-full">
                         <circle cx="200" cy="110" r="105" fill="#FF3B30" class="venn-circle" />
                         <circle cx="105" cy="240" r="105" fill="#5AC8FA" class="venn-circle" />
@@ -69,14 +83,14 @@
                         <circle cx="200" cy="340" r="105" fill="#4CD964" class="venn-circle" />
                     </svg>
                     <div id="label-love" class="iki-label top-[10px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" class="iki-label top-[155px] left-[-15px]">Skills</div>
-                    <div id="label-needs" class="iki-label top-[155px] right-[-15px]">Needs</div>
-                    <div id="label-profit" class="iki-label bottom-[5px] left-1/2 -translate-x-1/2">Profit</div>
+                    <div id="label-skills" class="iki-label top-[160px] left-[-30px]">Skills</div>
+                    <div id="label-needs" class="iki-label top-[160px] right-[-30px]">Needs</div>
+                    <div id="label-profit" class="iki-label bottom-[10px] left-1/2 -translate-x-1/2">Profit</div>
                     
-                    <div class="bridge-label top-[75px] left-[30px]">passion</div>
-                    <div class="bridge-label top-[75px] right-[30px]">mission</div>
-                    <div class="bridge-label bottom-[80px] left-[25px]">profession</div>
-                    <div class="bridge-label bottom-[80px] right-[25px]">vocation</div>
+                    <div class="bridge-label top-[70px] left-[15px]">passion</div>
+                    <div class="bridge-label top-[70px] right-[15px]">mission</div>
+                    <div class="bridge-label bottom-[60px] left-[10px]">profession</div>
+                    <div class="bridge-label bottom-[60px] right-[10px]">vocation</div>
                 </div>
             </div>
             <div id="iki-edit-fields" class="hidden space-y-2">
@@ -88,9 +102,9 @@
         </section>
 
         <section id="attitudes" class="tab-content active">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="w-full text-center">
-                    <thead class="bg-slate-50 border-b text-[10px] text-slate-400 font-bold uppercase">
+                    <thead class="bg-slate-50 border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                         <tr><th class="p-3 text-left">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr>
                     </thead>
                     <tbody id="attitude-grid" class="divide-y divide-slate-100"></tbody>
@@ -120,7 +134,7 @@
     </nav>
 
     <script>
-        // SCRIPT LOGIC (PERSISTENCE & RENDERING)
+        // All logic for storage, rendering, and tabs remains identical to keep your data safe.
         let editMode = false;
         let attitudes = JSON.parse(localStorage.getItem('attNames')) || ["Gratitude", "Focus"];
         const cats = ["Perso", "Social", "Pro"];
@@ -157,10 +171,10 @@
                         const key = `v-${cat}-${time}`;
                         const prog = localStorage.getItem(key+'-p') || "0";
                         const text = localStorage.getItem(key+'-t') || '';
-                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm">
-                            <div class="text-[8px] font-black text-slate-400 uppercase mb-1">${cat} • ${time}</div>
-                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" placeholder="...">${text}</textarea>
-                            <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)">
+                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all duration-300">
+                            <div class="text-[8px] font-black text-slate-400 uppercase mb-1 tracking-wider">${cat} • ${time}</div>
+                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" placeholder="..." class="text-slate-900">${text}</textarea>
+                            <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="w-full h-1 mt-1">
                         </div>`;
                     }).join('')}
                 </div>
@@ -169,7 +183,7 @@
 
         function updateProgress(key, el) {
             localStorage.setItem(key+'-p', el.value);
-            document.getElementById('card-' + key).className = `prog-${el.value} p-3 rounded-2xl border border-slate-100 shadow-sm`;
+            document.getElementById('card-' + key).className = `prog-${el.value} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all duration-300`;
         }
 
         function saveIki() {

@@ -21,28 +21,34 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* THE DYNAMIC LABELS */
+        /* THE LARGE CIRCULAR EDITORS */
         .iki-label { 
             position: absolute; 
-            width: 90px; /* Constrain width to force wrapping */
-            height: 90px;
+            width: 140px; /* Max size to stay within colored circles */
+            height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center; 
             font-weight: 800; 
-            font-size: 16px; /* Starting size */
-            line-height: 1.1;
+            font-size: 18px; 
+            line-height: 1.2;
             text-transform: uppercase; 
             z-index: 40; 
             color: #1e293b; 
             overflow: hidden;
+            border-radius: 50%; /* Makes the tap-area circular */
+            padding: 15px; /* Keeps text from touching the very edge */
             word-wrap: break-word;
-            transition: font-size 0.2s ease;
+            transition: all 0.2s ease;
         }
         
-        /* Prevent outline when editing */
-        .iki-label:focus { outline: none; }
+        /* Visual feedback when editing */
+        .iki-label[contenteditable="true"] { 
+            background: rgba(255,255,255,0.2); 
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+        }
+        .iki-label:focus { outline: none; background: rgba(255,255,255,0.4) !important; }
 
         .bridge-label { 
             position: absolute; 
@@ -82,23 +88,23 @@
     <main class="p-4">
         <section id="ikigai" class="tab-content">
             <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[480px]">
-                <div class="relative w-[340px] h-[420px]">
+                <div class="relative w-[360px] h-[400px]">
                     <svg viewBox="0 0 400 400" class="w-full h-full">
                         <circle cx="200" cy="115" r="105" fill="#FF6B6B" class="venn-circle" /> <circle cx="115" cy="200" r="105" fill="#78CCF0" class="venn-circle" /> <circle cx="285" cy="200" r="105" fill="#FFD95A" class="venn-circle" /> <circle cx="200" cy="285" r="105" fill="#7ED97E" class="venn-circle" /> </svg>
                     
-                    <div id="label-love" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[70px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[155px] left-[35px]">Skills</div>
-                    <div id="label-needs" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[155px] right-[35px]">Needs</div>
-                    <div id="label-profit" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label bottom-[70px] left-1/2 -translate-x-1/2">Profit</div>
+                    <div id="label-love" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[45px] left-1/2 -translate-x-1/2">Love</div>
+                    <div id="label-skills" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] left-[15px]">Skills</div>
+                    <div id="label-needs" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] right-[15px]">Needs</div>
+                    <div id="label-profit" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label bottom-[45px] left-1/2 -translate-x-1/2">Profit</div>
                     
-                    <div class="bridge-label top-[60px] left-[-20px]">passion</div>
-                    <div class="bridge-label top-[60px] right-[-20px]">mission</div>
-                    <div class="bridge-label bottom-[60px] left-[-20px]">profession</div>
-                    <div class="bridge-label bottom-[60px] right-[-20px]">vocation</div>
+                    <div class="bridge-label top-[60px] left-[-30px]">passion</div>
+                    <div class="bridge-label top-[60px] right-[-30px]">mission</div>
+                    <div class="bridge-label bottom-[60px] left-[-30px]">profession</div>
+                    <div class="bridge-label bottom-[60px] right-[-30px]">vocation</div>
                 </div>
             </div>
             
-            <p id="edit-hint" class="text-center text-xs text-slate-400 hidden italic">Tap the text inside the circles to change it</p>
+            <p id="edit-hint" class="text-center text-[10px] text-slate-400 hidden italic uppercase font-bold tracking-widest">Tap circles to edit content</p>
         </section>
 
         <section id="attitudes" class="tab-content active">
@@ -140,22 +146,19 @@
             document.getElementById('edit-btn').innerText = editMode ? "Done" : "Edit";
             document.getElementById('edit-hint')?.classList.toggle('hidden', !editMode);
             
-            // Toggle editability of the circle labels
             ['love', 'skills', 'needs', 'profit'].forEach(id => {
                 const el = document.getElementById('label-' + id);
                 el.contentEditable = editMode;
-                if (editMode) el.classList.add('bg-slate-50', 'rounded-full');
-                else el.classList.remove('bg-slate-50', 'rounded-full');
             });
 
             renderAttitudes(); renderGoals();
         }
 
         function autoShrink(el) {
-            let fontSize = 16;
+            let fontSize = 18;
             el.style.fontSize = fontSize + 'px';
-            // While text overflows the height of the circle container, reduce font size
-            while (el.scrollHeight > el.offsetHeight && fontSize > 9) {
+            // Dynamically shrink font if text height exceeds the 140px circular container
+            while (el.scrollHeight > el.offsetHeight && fontSize > 8) {
                 fontSize -= 1;
                 el.style.fontSize = fontSize + 'px';
             }
@@ -164,13 +167,13 @@
         function saveIki() {
             ['love', 'skills', 'needs', 'profit'].forEach(f => {
                 const v = document.getElementById('label-'+f).innerText;
-                localStorage.setItem('iki-v2-'+f, v);
+                localStorage.setItem('iki-v3-'+f, v);
             });
         }
 
         function loadIki() {
             ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                const v = localStorage.getItem('iki-v2-'+f);
+                const v = localStorage.getItem('iki-v3-'+f);
                 if (v) {
                     const el = document.getElementById('label-'+f);
                     el.innerText = v;
@@ -179,7 +182,6 @@
             });
         }
 
-        // Logic for Tracker & Goals
         function renderAttitudes() {
             const grid = document.getElementById('attitude-grid');
             grid.innerHTML = attitudes.map((name, idx) => `
@@ -198,7 +200,7 @@
                         const key = `v-${cat}-${time}`;
                         const prog = localStorage.getItem(key+'-p') || "0";
                         const text = localStorage.getItem(key+'-t') || '';
-                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm">
+                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all">
                             <div class="text-[8px] font-black text-slate-400 uppercase mb-1">${cat} • ${time}</div>
                             <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" class="text-slate-900">${text}</textarea>
                             <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="w-full h-1 mt-1">

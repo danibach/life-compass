@@ -66,9 +66,14 @@
                     <tbody id="attitude-grid" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
-            <div class="flex gap-3 mt-4">
-                <button id="add-habit-btn" onclick="addHabit()" class="hidden flex-1 py-3 bg-blue-50 text-blue-600 font-bold rounded-xl text-[10px] uppercase tracking-widest">Add Habit</button>
-                <button id="reset-week-btn" onclick="resetWeek()" class="hidden flex-1 py-3 bg-red-50 text-red-600 font-bold rounded-xl text-[10px] uppercase tracking-widest">Reset Week</button>
+
+            <div class="flex flex-col items-center mt-6">
+                <button onclick="resetWeek()" class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] opacity-60 hover:opacity-100 transition-opacity">
+                    ↺ Reset Weekly Tracker
+                </button>
+                <button id="add-habit-btn" onclick="addHabit()" class="hidden mt-6 w-full py-3 bg-blue-50 text-blue-600 font-bold rounded-xl text-[10px] uppercase tracking-widest">
+                    Add New Habit +
+                </button>
             </div>
         </section>
 
@@ -116,7 +121,6 @@
             editMode = !editMode;
             document.getElementById('edit-btn').innerText = editMode ? "Done" : "Edit";
             document.getElementById('add-habit-btn').classList.toggle('hidden', !editMode);
-            document.getElementById('reset-week-btn').classList.toggle('hidden', !editMode);
             ['love','skills','needs','profit'].forEach(id => {
                 document.getElementById('label-'+id).contentEditable = editMode;
             });
@@ -124,11 +128,9 @@
         }
 
         function resetWeek() {
-            if(confirm("Clear all checkboxes for this week?")) {
-                habits.forEach(h => {
-                    ['m','t','w','th','f','s','su'].forEach(d => {
-                        localStorage.removeItem(`chk-${h}-${d}`);
-                    });
+            if(confirm("Reset all checkboxes?")) {
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('chk-')) localStorage.removeItem(key);
                 });
                 renderAttitudes();
             }

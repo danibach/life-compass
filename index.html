@@ -9,19 +9,18 @@
 
     <title>Life Compass Pro</title>
 
-    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/180/7c3aed/flower-of-life.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/180/7c3aed/flower-of-life.png?v=2">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --ios-bg: #F2F2F7; }
-        body { background-color: var(--ios-bg); -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); }
+        body { background-color: var(--ios-bg); -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         header { padding: 1rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1); }
         nav { padding-bottom: calc(env(safe-area-inset-bottom) + 10px); }
         .venn-circle { mix-blend-mode: multiply; opacity: 0.8; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* IKI DIAGRAM LABELS */
         .iki-label { 
             position: absolute; 
             width: 140px; height: 140px;
@@ -33,26 +32,29 @@
         
         .bridge-label { position: absolute; font-size: 13px; font-style: italic; color: #475569; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 700; width: 100px; text-align: center; }
 
-        /* DEEP DIVES SECTION - Visual Polish */
-        .deep-dive-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s; }
+        .deep-dive-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 5px solid transparent; }
         .dd-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block; }
-        .dd-red { border-left: 5px solid #FF3B30; }
-        .dd-blue { border-left: 5px solid #007AFF; }
-        .dd-yellow { border-left: 5px solid #FFCC00; }
-        .dd-green { border-left: 5px solid #34C759; }
+        
+        .dd-red { border-left-color: #FF3B30; }
+        .dd-blue { border-left-color: #007AFF; }
+        .dd-yellow { border-left-color: #FFCC00; }
+        .dd-green { border-left-color: #34C759; }
 
         textarea { font-size: 16px !important; border: none; background: transparent; width: 100%; min-height: 80px; resize: none; color: #334155; }
         textarea:focus { outline: none; }
+        textarea:disabled { color: #64748b; opacity: 1; -webkit-text-fill-color: #64748b; }
+
+        .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
+        .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
+        .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4; }
     </style>
 </head>
-<body class="text-slate-900 font-sans pb-32">
+<body class="text-slate-900 pb-32">
 
     <header class="flex justify-between items-center">
         <h1 id="tab-title" class="text-xl font-black tracking-tight">Weekly Tracker</h1>
         <div class="flex gap-3">
-            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:opacity-50 text-slate-500">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            </button>
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg></button>
             <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full">Edit</button>
         </div>
     </header>
@@ -67,12 +69,10 @@
                         <circle cx="285" cy="200" r="105" fill="#FFD95A" class="venn-circle" /> 
                         <circle cx="200" cy="285" r="105" fill="#7ED97E" class="venn-circle" /> 
                     </svg>
-                    
                     <div id="label-love" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[45px] left-1/2 -translate-x-1/2">Love</div>
                     <div id="label-skills" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] left-[15px]">Skills</div>
                     <div id="label-needs" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] right-[15px]">Needs</div>
                     <div id="label-profit" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label bottom-[45px] left-1/2 -translate-x-1/2">Profit</div>
-                    
                     <div class="bridge-label top-[60px] left-[-30px]">passion</div>
                     <div class="bridge-label top-[60px] right-[-30px]">mission</div>
                     <div class="bridge-label bottom-[60px] left-[-30px]">profession</div>
@@ -82,25 +82,21 @@
 
             <div class="px-1 pb-10">
                 <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 text-center">Development Area</h2>
-                
                 <div class="deep-dive-card dd-red">
-                    <label class="dd-title text-red-500 pl-3">What I love to do</label>
-                    <textarea id="dd-love" oninput="saveIki()" placeholder="Enter details..."></textarea>
+                    <label class="dd-title text-red-500">What I love to do</label>
+                    <textarea id="dd-love" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea>
                 </div>
-
                 <div class="deep-dive-card dd-blue">
-                    <label class="dd-title text-blue-500 pl-3">What I am good at</label>
-                    <textarea id="dd-skills" oninput="saveIki()" placeholder="Enter details..."></textarea>
+                    <label class="dd-title text-blue-500">What I am good at</label>
+                    <textarea id="dd-skills" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea>
                 </div>
-
                 <div class="deep-dive-card dd-yellow">
-                    <label class="dd-title text-amber-500 pl-3">What the world needs</label>
-                    <textarea id="dd-needs" oninput="saveIki()" placeholder="Enter details..."></textarea>
+                    <label class="dd-title text-amber-500">What the world needs</label>
+                    <textarea id="dd-needs" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea>
                 </div>
-
                 <div class="deep-dive-card dd-green">
-                    <label class="dd-title text-emerald-600 pl-3">What I can be paid for</label>
-                    <textarea id="dd-profit" oninput="saveIki()" placeholder="Enter details..."></textarea>
+                    <label class="dd-title text-emerald-600">What I can be paid for</label>
+                    <textarea id="dd-profit" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea>
                 </div>
             </div>
         </section>
@@ -116,21 +112,13 @@
             </div>
         </section>
 
-        <section id="goals" class="tab-content">
-            <div id="goal-matrix" class="space-y-4"></div>
-        </section>
+        <section id="goals" class="tab-content"><div id="goal-matrix" class="space-y-4"></div></section>
     </main>
 
     <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-200 flex justify-around py-4 z-50">
-        <button onclick="showTab('attitudes', 'Weekly Tracker', this)" class="nav-btn flex flex-col items-center gap-1 text-blue-600">
-            <span class="text-[10px] font-black uppercase tracking-tight">Tracker</span>
-        </button>
-        <button onclick="showTab('ikigai', 'Ikigai Center', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
-            <span class="text-[10px] font-black uppercase tracking-tight">Ikigai</span>
-        </button>
-        <button onclick="showTab('goals', 'Vision 3x3', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
-            <span class="text-[10px] font-black uppercase tracking-tight">Vision</span>
-        </button>
+        <button onclick="showTab('attitudes', 'Weekly Tracker', this)" class="nav-btn flex flex-col items-center gap-1 text-blue-600"><span class="text-[10px] font-black uppercase tracking-tight">Tracker</span></button>
+        <button onclick="showTab('ikigai', 'Ikigai Center', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400"><span class="text-[10px] font-black uppercase tracking-tight">Ikigai</span></button>
+        <button onclick="showTab('goals', 'Vision 3x3', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400"><span class="text-[10px] font-black uppercase tracking-tight">Vision</span></button>
     </nav>
 
     <script>
@@ -147,6 +135,9 @@
                 el.contentEditable = editMode;
                 if (editMode) el.style.backgroundColor = "rgba(0,0,0,0.03)";
                 else el.style.backgroundColor = "transparent";
+                
+                // Toggle textareas
+                document.getElementById('dd-'+id).disabled = !editMode;
             });
             renderAttitudes(); renderGoals();
         }
@@ -199,7 +190,7 @@
                         const text = localStorage.getItem(key+'-t') || '';
                         return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all">
                             <div class="text-[8px] font-black text-slate-400 uppercase mb-1">${cat} • ${time}</div>
-                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" class="text-slate-900">${text}</textarea>
+                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" class="text-slate-900" ${editMode ? '' : 'disabled'}>${text}</textarea>
                             <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="w-full h-1 mt-1">
                         </div>`;
                     }).join('')}</div>`).join('');

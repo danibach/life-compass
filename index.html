@@ -21,18 +21,15 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* RESTORED IKIGAI GRAPHICS */
         .iki-label { 
             position: absolute; width: 140px; height: 140px;
             display: flex; align-items: center; justify-content: center;
             text-align: center; font-weight: 800; font-size: 18px; line-height: 1.2;
             text-transform: uppercase; z-index: 40; color: #1e293b; 
             overflow: hidden; border-radius: 50%; padding: 15px; word-wrap: break-word;
-            transition: font-size 0.2s ease;
         }
         .bridge-label { position: absolute; font-size: 13px; font-style: italic; color: #475569; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 700; width: 100px; text-align: center; }
 
-        /* RESTORED VISION COLORS */
         .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff !important; }
         .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB !important; }
         .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4 !important; }
@@ -49,10 +46,10 @@
     <header class="flex justify-between items-center">
         <h1 id="tab-title" class="text-xl font-black tracking-tight">Weekly Tracker</h1>
         <div class="flex gap-2">
-            <button onclick="importData()" title="Import" class="p-2 bg-slate-100 rounded-full text-slate-500">
+            <button onclick="exportData()" title="Export" class="p-2 bg-slate-100 rounded-full text-slate-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </button>
-            <button onclick="exportData()" title="Export" class="p-2 bg-slate-100 rounded-full text-slate-500">
+            <button onclick="importData()" title="Import" class="p-2 bg-slate-100 rounded-full text-slate-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
             </button>
             <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full">Edit</button>
@@ -69,6 +66,7 @@
                     <tbody id="attitude-grid" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
+            <button id="add-habit-btn" onclick="addHabit()" class="hidden mt-4 w-full py-3 bg-blue-50 text-blue-600 font-bold rounded-xl text-xs uppercase tracking-widest">Add New Habit</button>
         </section>
 
         <section id="ikigai" class="tab-content">
@@ -80,10 +78,10 @@
                         <circle cx="285" cy="200" r="105" fill="#FFD95A" class="venn-circle" /> 
                         <circle cx="200" cy="285" r="105" fill="#7ED97E" class="venn-circle" /> 
                     </svg>
-                    <div id="label-love" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[45px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] left-[15px]">Skills</div>
-                    <div id="label-needs" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] right-[15px]">Needs</div>
-                    <div id="label-profit" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label bottom-[45px] left-1/2 -translate-x-1/2">Profit</div>
+                    <div id="label-love" class="iki-label top-[45px] left-1/2 -translate-x-1/2" oninput="saveIki()">Love</div>
+                    <div id="label-skills" class="iki-label top-[130px] left-[15px]" oninput="saveIki()">Skills</div>
+                    <div id="label-needs" class="iki-label top-[130px] right-[15px]" oninput="saveIki()">Needs</div>
+                    <div id="label-profit" class="iki-label bottom-[45px] left-1/2 -translate-x-1/2" oninput="saveIki()">Profit</div>
                     
                     <div class="bridge-label top-[60px] left-[-30px]">passion</div>
                     <div class="bridge-label top-[60px] right-[-30px]">mission</div>
@@ -110,40 +108,46 @@
 
     <script>
         let editMode = false;
-        let habits = JSON.parse(localStorage.getItem('habits')) || ["Gratitude", "Meditation"];
+        let habits = JSON.parse(localStorage.getItem('habits-v4')) || ["Gratitude", "Meditation"];
 
         function toggleEditMode() {
             editMode = !editMode;
             document.getElementById('edit-btn').innerText = editMode ? "Done" : "Edit";
+            document.getElementById('add-habit-btn').classList.toggle('hidden', !editMode);
             ['love','skills','needs','profit'].forEach(id => {
                 document.getElementById('label-'+id).contentEditable = editMode;
             });
             renderAttitudes(); renderGoals();
         }
 
-        function autoShrink(el) {
-            let fontSize = 18; el.style.fontSize = fontSize + 'px';
-            while (el.scrollHeight > el.offsetHeight && fontSize > 8) { fontSize -= 1; el.style.fontSize = fontSize + 'px'; }
+        function addHabit() {
+            const name = prompt("New Habit Name:");
+            if (name) { habits.push(name); saveHabits(); renderAttitudes(); }
         }
 
-        function saveIki() {
-            ['love','skills','needs','profit'].forEach(f => {
-                localStorage.setItem('iki-v3-'+f, document.getElementById('label-'+f).innerText);
-                localStorage.setItem('dd-v3-'+f, document.getElementById('dd-'+f).value);
-            });
+        function deleteHabit(index) {
+            habits.splice(index, 1); saveHabits(); renderAttitudes();
         }
 
-        function loadIki() {
-            ['love','skills','needs','profit'].forEach(f => {
-                const cir = localStorage.getItem('iki-v3-'+f);
-                if(cir) { const el = document.getElementById('label-'+f); el.innerText = cir; autoShrink(el); }
-                document.getElementById('dd-'+f).value = localStorage.getItem('dd-v3-'+f) || '';
-            });
+        function editHabit(index, newName) {
+            habits[index] = newName; saveHabits();
         }
+
+        function saveHabits() { localStorage.setItem('habits-v4', JSON.stringify(habits)); }
 
         function renderAttitudes() {
             const grid = document.getElementById('attitude-grid');
-            grid.innerHTML = habits.map(h => `<tr><td class="p-3 text-left text-xs font-bold">${h}</td>${['m','t','w','th','f','s','su'].map(d => `<td><input type="checkbox" class="w-5 h-5 rounded-full border-slate-300"></td>`).join('')}</tr>`).join('');
+            grid.innerHTML = habits.map((h, i) => `
+                <tr>
+                    <td class="p-3 text-left text-xs font-bold">
+                        ${editMode ? `<button onclick="deleteHabit(${i})" class="text-red-500 mr-2">✕</button>` : ''}
+                        <span contenteditable="${editMode}" onblur="editHabit(${i}, this.innerText)">${h}</span>
+                    </td>
+                    ${['m','t','w','th','f','s','su'].map(d => {
+                        const kid = `chk-${h}-${d}`;
+                        return `<td><input type="checkbox" onchange="localStorage.setItem('${kid}', this.checked)" ${localStorage.getItem(kid)==='true'?'checked':''} class="w-5 h-5 rounded-full border-slate-300"></td>`;
+                    }).join('')}
+                </tr>`).join('');
         }
 
         function renderGoals() {
@@ -162,7 +166,21 @@
 
         function updateProg(key, el) {
             localStorage.setItem(key+'-p', el.value);
-            document.getElementById('card-'+key).className = `prog-${el.value} p-3 rounded-2xl border shadow-sm transition-all`;
+            document.getElementById('card-'+key).className = `prog-${el.value} p-3 rounded-2xl border shadow-sm transition-all duration-300`;
+        }
+
+        function saveIki() {
+            ['love','skills','needs','profit'].forEach(f => {
+                localStorage.setItem('iki-v4-'+f, document.getElementById('label-'+f).innerText);
+                localStorage.setItem('dd-v4-'+f, document.getElementById('dd-'+f).value);
+            });
+        }
+
+        function loadIki() {
+            ['love','skills','needs','profit'].forEach(f => {
+                document.getElementById('label-'+f).innerText = localStorage.getItem('iki-v4-'+f) || f;
+                document.getElementById('dd-'+f).value = localStorage.getItem('dd-v4-'+f) || '';
+            });
         }
 
         function exportData() {

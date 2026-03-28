@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Life Compass">
@@ -15,41 +14,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --ios-bg: #F2F2F7; }
-        body { 
-            background-color: var(--ios-bg); 
-            -webkit-tap-highlight-color: transparent; 
-            padding-top: env(safe-area-inset-top); 
-        }
-        header { 
-            padding: 1rem; 
-            background: rgba(255,255,255,0.8); 
-            backdrop-filter: blur(20px); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
+        body { background-color: var(--ios-bg); -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); }
+        header { padding: 1rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1); }
         nav { padding-bottom: calc(env(safe-area-inset-bottom) + 10px); }
         .venn-circle { mix-blend-mode: multiply; opacity: 0.7; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Main Labels */
+        /* Main Labels - Adjusted positions to stay inside circles */
         .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 13px; text-transform: uppercase; pointer-events: none; z-index: 40; color: #1e293b; }
         
-        /* Bridge Labels - Bolder, Bigger, and Spread Out */
-        .bridge-label { 
-            position: absolute; 
-            font-size: 12px; 
-            font-style: italic; 
-            color: #475569; 
-            text-transform: lowercase; 
-            pointer-events: none; 
-            z-index: 40; 
-            font-weight: 800;
-            width: 80px;
-            text-align: center;
-        }
+        /* Bridge Labels */
+        .bridge-label { position: absolute; font-size: 12px; font-style: italic; color: #475569; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 800; width: 80px; text-align: center; }
 
         .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
         .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
@@ -65,8 +41,8 @@
     <header class="flex justify-between items-center">
         <h1 id="tab-title" class="text-xl font-black tracking-tight">Weekly Tracker</h1>
         <div class="flex gap-3">
-            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full">
-                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:opacity-50 text-slate-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </button>
             <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full">Edit</button>
         </div>
@@ -74,25 +50,27 @@
 
     <main class="p-4">
         <section id="ikigai" class="tab-content">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[440px]">
-                <div class="relative w-[320px] h-[380px]">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[460px]">
+                <div class="relative w-[320px] h-[400px]">
                     <svg viewBox="0 0 400 450" class="w-full h-full">
                         <circle cx="200" cy="110" r="105" fill="#FF3B30" class="venn-circle" />
-                        <circle cx="105" cy="240" r="105" fill="#5AC8FA" class="venn-circle" />
-                        <circle cx="295" cy="240" r="105" fill="#FFCC00" class="venn-circle" />
+                        <circle cx="105" cy="225" r="105" fill="#5AC8FA" class="venn-circle" />
+                        <circle cx="295" cy="225" r="105" fill="#FFCC00" class="venn-circle" />
                         <circle cx="200" cy="340" r="105" fill="#4CD964" class="venn-circle" />
                     </svg>
-                    <div id="label-love" class="iki-label top-[10px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" class="iki-label top-[160px] left-[-30px]">Skills</div>
-                    <div id="label-needs" class="iki-label top-[160px] right-[-30px]">Needs</div>
-                    <div id="label-profit" class="iki-label bottom-[10px] left-1/2 -translate-x-1/2">Profit</div>
                     
-                    <div class="bridge-label top-[70px] left-[15px]">passion</div>
-                    <div class="bridge-label top-[70px] right-[15px]">mission</div>
-                    <div class="bridge-label bottom-[60px] left-[10px]">profession</div>
-                    <div class="bridge-label bottom-[60px] right-[10px]">vocation</div>
+                    <div id="label-love" class="iki-label top-[60px] left-1/2 -translate-x-1/2">Love</div>
+                    <div id="label-skills" class="iki-label top-[215px] left-[5px]">Skills</div>
+                    <div id="label-needs" class="iki-label top-[215px] right-[5px]">Needs</div>
+                    <div id="label-profit" class="iki-label bottom-[60px] left-1/2 -translate-x-1/2">Profit</div>
+                    
+                    <div class="bridge-label top-[115px] left-[15px]">passion</div>
+                    <div class="bridge-label top-[115px] right-[15px]">mission</div>
+                    <div class="bridge-label bottom-[105px] left-[10px]">profession</div>
+                    <div class="bridge-label bottom-[105px] right-[10px]">vocation</div>
                 </div>
             </div>
+            
             <div id="iki-edit-fields" class="hidden space-y-2">
                 <input type="text" id="iki-love" placeholder="Love..." class="w-full p-3 bg-white rounded-xl border" oninput="saveIki()">
                 <input type="text" id="iki-skills" placeholder="Skills..." class="w-full p-3 bg-white rounded-xl border" oninput="saveIki()">
@@ -115,7 +93,6 @@
                 </div>
             </div>
         </section>
-
         <section id="goals" class="tab-content">
             <div id="goal-matrix" class="space-y-4"></div>
         </section>
@@ -134,7 +111,7 @@
     </nav>
 
     <script>
-        // All logic for storage, rendering, and tabs remains identical to keep your data safe.
+        // Persistence Logic
         let editMode = false;
         let attitudes = JSON.parse(localStorage.getItem('attNames')) || ["Gratitude", "Focus"];
         const cats = ["Perso", "Social", "Pro"];
@@ -151,16 +128,11 @@
         function renderAttitudes() {
             const grid = document.getElementById('attitude-grid');
             grid.innerHTML = attitudes.map((name, idx) => `
-                <tr>
-                    <td class="p-3 text-left text-xs font-bold text-slate-700">
-                        ${editMode ? `<button onclick="deleteAtt(${idx})" class="text-red-500 mr-1">✕</button>` : ''} ${name}
-                    </td>
+                <tr><td class="p-3 text-left text-xs font-bold text-slate-700">${editMode ? `<button onclick="deleteAtt(${idx})" class="text-red-500 mr-1">✕</button>` : ''}${name}</td>
                     ${['mon','tue','wed','thu','fri','sat','sun'].map(d => {
                         const id = `chk-${name}-${d}`;
                         return `<td><input type="checkbox" onchange="localStorage.setItem('${id}', this.checked)" ${localStorage.getItem(id)==='true'?'checked':''} class="w-5 h-5 rounded-full border-slate-300"></td>`;
-                    }).join('')}
-                </tr>
-            `).join('');
+                    }).join('')}</tr>`).join('');
         }
 
         function renderGoals() {
@@ -173,12 +145,10 @@
                         const text = localStorage.getItem(key+'-t') || '';
                         return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all duration-300">
                             <div class="text-[8px] font-black text-slate-400 uppercase mb-1 tracking-wider">${cat} • ${time}</div>
-                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" placeholder="..." class="text-slate-900">${text}</textarea>
+                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" class="text-slate-900">${text}</textarea>
                             <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="w-full h-1 mt-1">
                         </div>`;
-                    }).join('')}
-                </div>
-            `).join('');
+                    }).join('')}</div>`).join('');
         }
 
         function updateProgress(key, el) {

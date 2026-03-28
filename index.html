@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Life Compass">
@@ -26,17 +25,17 @@
             backdrop-filter: blur(20px); 
             position: sticky; 
             top: 0; 
-            z-index: 50;
+            z-index: 100;
             border-bottom: 1px solid rgba(0,0,0,0.1);
         }
         nav { padding-bottom: calc(env(safe-area-inset-bottom) + 10px); }
         .venn-circle { mix-blend-mode: multiply; opacity: 0.7; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 10; color: #1e293b; }
         
-        /* Bridge Labels (Passion, Mission, etc) */
-        .bridge-label { position: absolute; font-size: 10px; font-style: italic; color: #94a3b8; text-transform: lowercase; pointer-events: none; }
+        /* Fixed Label Z-Indexing */
+        .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 40; color: #1e293b; }
+        .bridge-label { position: absolute; font-size: 10px; font-style: italic; color: #64748b; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 600; }
 
         .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
         .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
@@ -61,23 +60,23 @@
 
     <main class="p-4">
         <section id="ikigai" class="tab-content">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[400px]">
-                <div class="relative w-[300px] h-[340px]">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 mb-6 relative flex justify-center items-center overflow-hidden h-[420px]">
+                <div class="relative w-[300px] h-[360px]">
                     <svg viewBox="0 0 400 450" class="w-full h-full">
                         <circle cx="200" cy="110" r="105" fill="#FF3B30" class="venn-circle" />
                         <circle cx="105" cy="240" r="105" fill="#5AC8FA" class="venn-circle" />
                         <circle cx="295" cy="240" r="105" fill="#FFCC00" class="venn-circle" />
                         <circle cx="200" cy="340" r="105" fill="#4CD964" class="venn-circle" />
                     </svg>
-                    <div id="label-love" class="iki-label top-[15px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" class="iki-label top-[155px] left-[-10px]">Skills</div>
-                    <div id="label-needs" class="iki-label top-[155px] right-[-10px]">Needs</div>
-                    <div id="label-profit" class="iki-label bottom-[15px] left-1/2 -translate-x-1/2">Profit</div>
+                    <div id="label-love" class="iki-label top-[10px] left-1/2 -translate-x-1/2">Love</div>
+                    <div id="label-skills" class="iki-label top-[155px] left-[-15px]">Skills</div>
+                    <div id="label-needs" class="iki-label top-[155px] right-[-15px]">Needs</div>
+                    <div id="label-profit" class="iki-label bottom-[5px] left-1/2 -translate-x-1/2">Profit</div>
                     
-                    <div class="bridge-label top-[80px] left-[35px]">passion</div>
-                    <div class="bridge-label top-[80px] right-[35px]">mission</div>
-                    <div class="bridge-label bottom-[80px] left-[30px]">profession</div>
-                    <div class="bridge-label bottom-[80px] right-[30px]">vocation</div>
+                    <div class="bridge-label top-[75px] left-[30px]">passion</div>
+                    <div class="bridge-label top-[75px] right-[30px]">mission</div>
+                    <div class="bridge-label bottom-[80px] left-[25px]">profession</div>
+                    <div class="bridge-label bottom-[80px] right-[25px]">vocation</div>
                 </div>
             </div>
             <div id="iki-edit-fields" class="hidden space-y-2">
@@ -121,6 +120,7 @@
     </nav>
 
     <script>
+        // SCRIPT LOGIC (PERSISTENCE & RENDERING)
         let editMode = false;
         let attitudes = JSON.parse(localStorage.getItem('attNames')) || ["Gratitude", "Focus"];
         const cats = ["Perso", "Social", "Pro"];

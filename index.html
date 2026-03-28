@@ -21,21 +21,29 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Inner Labels: LOVE, SKILLS, NEEDS, PROFIT */
+        /* THE DYNAMIC LABELS */
         .iki-label { 
             position: absolute; 
-            width: 120px; 
+            width: 90px; /* Constrain width to force wrapping */
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center; 
             font-weight: 800; 
-            font-size: 16px; 
-            letter-spacing: 0.05em;
+            font-size: 16px; /* Starting size */
+            line-height: 1.1;
             text-transform: uppercase; 
-            pointer-events: none; 
             z-index: 40; 
             color: #1e293b; 
+            overflow: hidden;
+            word-wrap: break-word;
+            transition: font-size 0.2s ease;
         }
         
-        /* Bridge Labels - Pushed further out and up */
+        /* Prevent outline when editing */
+        .iki-label:focus { outline: none; }
+
         .bridge-label { 
             position: absolute; 
             font-size: 13px; 
@@ -49,6 +57,7 @@
             text-align: center; 
         }
 
+        /* Goal Matrix */
         .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
         .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
         .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4; }
@@ -63,7 +72,7 @@
     <header class="flex justify-between items-center">
         <h1 id="tab-title" class="text-xl font-black tracking-tight">Weekly Tracker</h1>
         <div class="flex gap-3">
-            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full">
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:opacity-50">
                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </button>
             <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full">Edit</button>
@@ -77,10 +86,10 @@
                     <svg viewBox="0 0 400 400" class="w-full h-full">
                         <circle cx="200" cy="115" r="105" fill="#FF6B6B" class="venn-circle" /> <circle cx="115" cy="200" r="105" fill="#78CCF0" class="venn-circle" /> <circle cx="285" cy="200" r="105" fill="#FFD95A" class="venn-circle" /> <circle cx="200" cy="285" r="105" fill="#7ED97E" class="venn-circle" /> </svg>
                     
-                    <div id="label-love" class="iki-label top-[85px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" class="iki-label top-[190px] left-[30px]">Skills</div>
-                    <div id="label-needs" class="iki-label top-[190px] right-[30px]">Needs</div>
-                    <div id="label-profit" class="iki-label bottom-[85px] left-1/2 -translate-x-1/2">Profit</div>
+                    <div id="label-love" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[70px] left-1/2 -translate-x-1/2">Love</div>
+                    <div id="label-skills" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[155px] left-[35px]">Skills</div>
+                    <div id="label-needs" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[155px] right-[35px]">Needs</div>
+                    <div id="label-profit" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label bottom-[70px] left-1/2 -translate-x-1/2">Profit</div>
                     
                     <div class="bridge-label top-[60px] left-[-20px]">passion</div>
                     <div class="bridge-label top-[60px] right-[-20px]">mission</div>
@@ -89,12 +98,7 @@
                 </div>
             </div>
             
-            <div id="iki-edit-fields" class="hidden space-y-2">
-                <input type="text" id="iki-love" placeholder="Love..." class="w-full p-3 bg-white rounded-xl border" oninput="saveIki()">
-                <input type="text" id="iki-skills" placeholder="Skills..." class="w-full p-3 bg-white rounded-xl border" oninput="saveIki()">
-                <input type="text" id="iki-needs" placeholder="Needs..." class="w-full p-3 bg-white rounded-xl border" oninput="saveIki()">
-                <input type="text" id="iki-profit" placeholder="Profit..." class="w-full p-3 bg-white rounded-xl border" oninput="saveIki()">
-            </div>
+            <p id="edit-hint" class="text-center text-xs text-slate-400 hidden italic">Tap the text inside the circles to change it</p>
         </section>
 
         <section id="attitudes" class="tab-content active">
@@ -126,7 +130,6 @@
     </nav>
 
     <script>
-        // LOGIC PRESERVED 
         let editMode = false;
         let attitudes = JSON.parse(localStorage.getItem('attNames')) || ["Gratitude", "Focus"];
         const cats = ["Perso", "Social", "Pro"];
@@ -135,10 +138,48 @@
         function toggleEditMode() {
             editMode = !editMode;
             document.getElementById('edit-btn').innerText = editMode ? "Done" : "Edit";
-            document.getElementById('iki-edit-fields').classList.toggle('hidden', !editMode);
+            document.getElementById('edit-hint')?.classList.toggle('hidden', !editMode);
+            
+            // Toggle editability of the circle labels
+            ['love', 'skills', 'needs', 'profit'].forEach(id => {
+                const el = document.getElementById('label-' + id);
+                el.contentEditable = editMode;
+                if (editMode) el.classList.add('bg-slate-50', 'rounded-full');
+                else el.classList.remove('bg-slate-50', 'rounded-full');
+            });
+
             renderAttitudes(); renderGoals();
         }
 
+        function autoShrink(el) {
+            let fontSize = 16;
+            el.style.fontSize = fontSize + 'px';
+            // While text overflows the height of the circle container, reduce font size
+            while (el.scrollHeight > el.offsetHeight && fontSize > 9) {
+                fontSize -= 1;
+                el.style.fontSize = fontSize + 'px';
+            }
+        }
+
+        function saveIki() {
+            ['love', 'skills', 'needs', 'profit'].forEach(f => {
+                const v = document.getElementById('label-'+f).innerText;
+                localStorage.setItem('iki-v2-'+f, v);
+            });
+        }
+
+        function loadIki() {
+            ['love', 'skills', 'needs', 'profit'].forEach(f => {
+                const v = localStorage.getItem('iki-v2-'+f);
+                if (v) {
+                    const el = document.getElementById('label-'+f);
+                    el.innerText = v;
+                    autoShrink(el);
+                }
+            });
+        }
+
+        // Logic for Tracker & Goals
         function renderAttitudes() {
             const grid = document.getElementById('attitude-grid');
             grid.innerHTML = attitudes.map((name, idx) => `
@@ -168,22 +209,6 @@
         function updateProgress(key, el) {
             localStorage.setItem(key+'-p', el.value);
             document.getElementById('card-' + key).className = `prog-${el.value} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all duration-300`;
-        }
-
-        function saveIki() {
-            ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                const v = document.getElementById('iki-'+f).value;
-                localStorage.setItem('iki-'+f, v);
-                document.getElementById('label-'+f).innerText = v || f.toUpperCase();
-            });
-        }
-
-        function loadIki() {
-            ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                const v = localStorage.getItem('iki-'+f) || '';
-                document.getElementById('iki-'+f).value = v;
-                document.getElementById('label-'+f).innerText = v || f.toUpperCase();
-            });
         }
 
         function showTab(id, title, btn) {

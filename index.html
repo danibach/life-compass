@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Life Compass Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -10,19 +12,18 @@
         body { background-color: var(--ios-bg); -webkit-tap-highlight-color: transparent; }
         header { padding-top: env(safe-area-inset-top); }
         nav { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
-        
         .venn-circle { mix-blend-mode: multiply; opacity: 0.7; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .iki-label { position: absolute; width: 100px; text-align: center; font-weight: 900; font-size: 11px; text-transform: uppercase; pointer-events: none; z-index: 10; }
         
-        /* Fixed Traffic Light States with forced background colors */
+        /* Traffic Light States */
         .prog-0 { border-left: 4px solid #FF3B30 !important; background-color: #ffffff !important; }
         .prog-50 { border-left: 4px solid #FFCC00 !important; background-color: #FFFBEB !important; }
         .prog-100 { border-left: 4px solid #4CD964 !important; background-color: #F0FDF4 !important; }
         
         input[type="range"].snap-slider { -webkit-appearance: none; height: 8px; background: #E5E5EA; border-radius: 4px; }
-        input[type="range"].snap-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 1px solid #D1D1D6; }
+        input[type="range"].snap-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 1px solid #D1D1D6; }
         .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); }
         textarea { font-size: 16px !important; }
     </style>
@@ -30,17 +31,15 @@
 <body class="text-slate-900 font-sans pb-32">
 
     <header class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-50 px-4 py-4 flex justify-between items-end">
-        <h1 id="tab-title" class="text-2xl font-black tracking-tight">Weekly Tracker</h1>
+        <h1 id="tab-title" class="text-2xl font-black tracking-tight text-slate-800">Weekly Tracker</h1>
         <div class="flex gap-2">
-            <button onclick="document.getElementById('importFile').click()" class="p-2 bg-slate-100 rounded-full active:scale-90 transition-transform">
+            <button onclick="document.getElementById('importFile').click()" class="p-2 bg-slate-100 rounded-full active:scale-95">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
             </button>
             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
-            
-            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:scale-90 transition-transform">
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full active:scale-95">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </button>
-            
             <button onclick="toggleEditMode()" id="edit-btn" class="text-sm font-bold text-blue-600 px-4 py-1.5 bg-blue-50 rounded-full">Edit</button>
         </div>
     </header>
@@ -55,34 +54,29 @@
                         <circle cx="295" cy="240" r="105" fill="#FFCC00" class="venn-circle" />
                         <circle cx="200" cy="340" r="105" fill="#4CD964" class="venn-circle" />
                     </svg>
-                    
                     <div id="label-love" class="iki-label top-[15px] left-1/2 -translate-x-1/2 text-slate-800">Love</div>
                     <div id="label-skills" class="iki-label top-[155px] left-[-10px] text-slate-800">Skills</div>
                     <div id="label-needs" class="iki-label top-[155px] right-[-10px] text-slate-800">Needs</div>
                     <div id="label-profit" class="iki-label bottom-[15px] left-1/2 -translate-x-1/2 text-slate-800">Profit</div>
-
-                    <div class="absolute top-[80px] left-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none">passion</div>
-                    <div class="absolute top-[80px] right-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none text-right">mission</div>
-                    <div class="absolute bottom-[80px] left-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none">profession</div>
-                    <div class="absolute bottom-[80px] right-[30px] text-[10px] italic text-slate-400 lowercase pointer-events-none text-right">vocation</div>
+                    <div class="absolute top-[80px] left-[30px] text-[10px] italic text-slate-400 lowercase italic">passion</div>
+                    <div class="absolute top-[80px] right-[30px] text-[10px] italic text-slate-400 lowercase text-right italic">mission</div>
+                    <div class="absolute bottom-[80px] left-[30px] text-[10px] italic text-slate-400 lowercase italic">profession</div>
+                    <div class="absolute bottom-[80px] right-[30px] text-[10px] italic text-slate-400 lowercase text-right italic">vocation</div>
                 </div>
             </div>
-            
             <div id="iki-edit-fields" class="hidden space-y-3">
-                <input type="text" id="iki-love" placeholder="Love..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
-                <input type="text" id="iki-skills" placeholder="Skills..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
-                <input type="text" id="iki-needs" placeholder="Needs..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
-                <input type="text" id="iki-profit" placeholder="Profit..." class="w-full p-4 bg-white rounded-xl shadow-inner border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-love" placeholder="Love..." class="w-full p-4 bg-white rounded-xl border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-skills" placeholder="Skills..." class="w-full p-4 bg-white rounded-xl border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-needs" placeholder="Needs..." class="w-full p-4 bg-white rounded-xl border border-slate-100" oninput="saveIki()">
+                <input type="text" id="iki-profit" placeholder="Profit..." class="w-full p-4 bg-white rounded-xl border border-slate-100" oninput="saveIki()">
             </div>
         </section>
 
         <section id="attitudes" class="tab-content active">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="w-full">
-                    <thead class="bg-slate-50 border-b">
-                        <tr class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                            <th class="p-4 text-left">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th>
-                        </tr>
+                    <thead class="bg-slate-50 border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                        <tr><th class="p-4 text-left">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr>
                     </thead>
                     <tbody id="attitude-grid" class="divide-y divide-slate-50"></tbody>
                 </table>
@@ -91,7 +85,7 @@
                     <button onclick="addAttitude()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">Add</button>
                 </div>
             </div>
-            <button onclick="resetWeeklyTracker()" class="mt-6 w-full py-4 text-red-500 font-bold text-sm bg-white rounded-2xl active:bg-red-50 shadow-sm border border-slate-100 tracking-tight">RESET WEEKLY TRACKER</button>
+            <button onclick="resetWeeklyTracker()" class="mt-6 w-full py-4 text-red-500 font-bold text-sm bg-white rounded-2xl shadow-sm border border-slate-100 tracking-tight">RESET WEEKLY TRACKER</button>
         </section>
 
         <section id="goals" class="tab-content">
@@ -153,7 +147,7 @@
                         const prog = localStorage.getItem(key+'-p') || "0";
                         const text = localStorage.getItem(key+'-t') || '';
                         return `
-                        <div class="prog-${prog} p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all duration-300">
+                        <div id="card-${key}" class="prog-${prog} p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all duration-300">
                             <textarea oninput="localStorage.setItem('${key}-t', this.value)" placeholder="• ..." class="bg-transparent border-none w-full text-[10px] leading-tight h-16 p-0 focus:ring-0 resize-none font-medium text-slate-800">${text}</textarea>
                             <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="snap-slider w-full mt-2">
                         </div>`;
@@ -165,7 +159,7 @@
         function updateProgress(key, el) {
             const val = el.value;
             localStorage.setItem(key+'-p', val);
-            const card = el.closest('.p-2');
+            const card = document.getElementById('card-' + key);
             card.className = `prog-${val} p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all duration-300`;
         }
 
@@ -196,7 +190,10 @@
         function exportData() {
             const data = JSON.stringify(localStorage);
             const blob = new Blob([data], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'life-compass.json'; a.click();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `compass-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
         }
 
         function importData(event) {
@@ -208,8 +205,9 @@
                     const data = JSON.parse(e.target.result);
                     localStorage.clear();
                     for (const key in data) { localStorage.setItem(key, data[key]); }
-                    alert("Sync complete!"); location.reload();
-                } catch (err) { alert("Format error."); }
+                    alert("Data Sync Successful!");
+                    location.reload();
+                } catch (err) { alert("File error."); }
             };
             reader.readAsText(file);
         }
@@ -222,7 +220,7 @@
         function deleteAtt(idx) { attitudes.splice(idx,1); localStorage.setItem('attNames', JSON.stringify(attitudes)); renderAttitudes(); }
 
         function resetWeeklyTracker() {
-            if(confirm("Reset all checkmarks?")) {
+            if(confirm("Reset this week's progress?")) {
                 Object.keys(localStorage).filter(k => k.startsWith('chk-')).forEach(k => localStorage.removeItem(k));
                 renderAttitudes();
             }

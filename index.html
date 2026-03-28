@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Life Compass">
 
-    <title>Life Compass Pro</title>
+    <title>Life Compass</title>
 
-    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/180/7c3aed/flower-of-life.png?v=2">
+    <link rel="apple-touch-icon" href="https://unpkg.com/lucide-static@0.344.0/icons/flower-2.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -21,7 +21,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* IKI LABELS */
         .iki-label { 
             position: absolute; width: 140px; height: 140px;
             display: flex; align-items: center; justify-content: center;
@@ -29,154 +28,150 @@
             text-transform: uppercase; z-index: 40; color: #1e293b; 
             overflow: hidden; border-radius: 50%; padding: 15px; word-wrap: break-word;
         }
-        .bridge-label { position: absolute; font-size: 13px; font-style: italic; color: #475569; text-transform: lowercase; pointer-events: none; z-index: 40; font-weight: 700; width: 100px; text-align: center; }
 
-        /* DEEP DIVE CARDS */
-        .deep-dive-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 5px solid transparent; }
-        .dd-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block; }
-        .dd-red { border-left-color: #FF3B30; }
-        .dd-blue { border-left-color: #007AFF; }
-        .dd-yellow { border-left-color: #FFCC00; }
-        .dd-green { border-left-color: #34C759; }
+        /* VISION COLORS RESTORED */
+        .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff !important; }
+        .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB !important; }
+        .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4 !important; }
 
-        /* VISION GRID COLOR CODE */
-        .prog-0 { border-left: 5px solid #FF3B30 !important; background-color: #ffffff; }
-        .prog-50 { border-left: 5px solid #FFCC00 !important; background-color: #FFFBEB; }
-        .prog-100 { border-left: 5px solid #4CD964 !important; background-color: #F0FDF4; }
-
+        .deep-dive-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 5px solid #ddd; }
         textarea { font-size: 16px !important; border: none; background: transparent; width: 100%; min-height: 80px; resize: none; color: #334155; }
-        textarea:focus { outline: none; }
         input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #ddd; border-radius: 5px; margin-top: 8px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: white; border: 1px solid #ccc; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: white; border: 1px solid #ccc; border-radius: 50%; }
     </style>
 </head>
 <body class="text-slate-900 pb-32">
 
     <header class="flex justify-between items-center">
-        <h1 id="tab-title" class="text-xl font-black tracking-tight">Weekly Tracker</h1>
-        <div class="flex gap-3">
-            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg></button>
+        <h1 id="tab-title" class="text-xl font-black tracking-tight">Tracker</h1>
+        <div class="flex gap-2">
+            <button onclick="importData()" class="p-2 bg-slate-100 rounded-full text-slate-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            </button>
+            <button onclick="exportData()" class="p-2 bg-slate-100 rounded-full text-slate-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
+            </button>
             <button onclick="toggleEditMode()" id="edit-btn" class="text-xs font-bold text-blue-600 px-3 py-1.5 bg-blue-50 rounded-full">Edit</button>
         </div>
     </header>
 
     <main class="p-4">
-        <section id="ikigai" class="tab-content">
-            <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 mb-8 relative flex justify-center items-center overflow-hidden h-[460px]">
-                <div class="relative w-[360px] h-[400px]">
-                    <svg viewBox="0 0 400 400" class="w-full h-full">
-                        <circle cx="200" cy="115" r="105" fill="#FF6B6B" class="venn-circle" /> 
-                        <circle cx="115" cy="200" r="105" fill="#78CCF0" class="venn-circle" /> 
-                        <circle cx="285" cy="200" r="105" fill="#FFD95A" class="venn-circle" /> 
-                        <circle cx="200" cy="285" r="105" fill="#7ED97E" class="venn-circle" /> 
-                    </svg>
-                    <div id="label-love" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[45px] left-1/2 -translate-x-1/2">Love</div>
-                    <div id="label-skills" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] left-[15px]">Skills</div>
-                    <div id="label-needs" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label top-[130px] right-[15px]">Needs</div>
-                    <div id="label-profit" contenteditable="false" oninput="autoShrink(this); saveIki()" class="iki-label bottom-[45px] left-1/2 -translate-x-1/2">Profit</div>
-                    <div class="bridge-label top-[60px] left-[-30px]">passion</div>
-                    <div class="bridge-label top-[60px] right-[-30px]">mission</div>
-                    <div class="bridge-label bottom-[60px] left-[-30px]">profession</div>
-                    <div class="bridge-label bottom-[60px] right-[-30px]">vocation</div>
-                </div>
-            </div>
-
-            <div class="px-1 pb-10">
-                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 text-center">Development Area</h2>
-                <div class="deep-dive-card dd-red"><label class="dd-title text-red-500">What I love to do</label><textarea id="dd-love" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea></div>
-                <div class="deep-dive-card dd-blue"><label class="dd-title text-blue-500">What I am good at</label><textarea id="dd-skills" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea></div>
-                <div class="deep-dive-card dd-yellow"><label class="dd-title text-amber-500">What the world needs</label><textarea id="dd-needs" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea></div>
-                <div class="deep-dive-card dd-green"><label class="dd-title text-emerald-600">What I can be paid for</label><textarea id="dd-profit" oninput="saveIki()" placeholder="Tap Edit to list details..." disabled></textarea></div>
-            </div>
-        </section>
-
         <section id="attitudes" class="tab-content active">
              <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="w-full text-center">
                     <thead class="bg-slate-50 border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                        <tr><th class="p-3 text-left text-blue-600">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr>
+                        <tr><th class="p-3 text-left">Habit</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr>
                     </thead>
                     <tbody id="attitude-grid" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
         </section>
 
-        <section id="goals" class="tab-content">
-            <div id="goal-matrix" class="space-y-4"></div>
+        <section id="ikigai" class="tab-content">
+            <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 mb-8 relative flex justify-center items-center h-[420px]">
+                <div class="relative w-[340px] h-[340px]">
+                    <svg viewBox="0 0 400 400" class="w-full h-full">
+                        <circle cx="200" cy="115" r="105" fill="#FF6B6B" class="venn-circle" /> 
+                        <circle cx="115" cy="200" r="105" fill="#78CCF0" class="venn-circle" /> 
+                        <circle cx="285" cy="200" r="105" fill="#FFD95A" class="venn-circle" /> 
+                        <circle cx="200" cy="285" r="105" fill="#7ED97E" class="venn-circle" /> 
+                    </svg>
+                    <div id="label-love" contenteditable="false" oninput="saveIki()" class="iki-label top-[45px] left-1/2 -translate-x-1/2">Love</div>
+                    <div id="label-skills" contenteditable="false" oninput="saveIki()" class="iki-label top-[130px] left-[15px]">Skills</div>
+                    <div id="label-needs" contenteditable="false" oninput="saveIki()" class="iki-label top-[130px] right-[15px]">Needs</div>
+                    <div id="label-profit" contenteditable="false" oninput="saveIki()" class="iki-label bottom-[45px] left-1/2 -translate-x-1/2">Profit</div>
+                </div>
+            </div>
+            <div class="px-1 space-y-4">
+                <div class="deep-dive-card" style="border-left-color:#FF3B30"><label class="dd-title">What I love</label><textarea id="dd-love" oninput="saveIki()"></textarea></div>
+                <div class="deep-dive-card" style="border-left-color:#007AFF"><label class="dd-title">What I'm good at</label><textarea id="dd-skills" oninput="saveIki()"></textarea></div>
+                <div class="deep-dive-card" style="border-left-color:#FFCC00"><label class="dd-title">World Needs</label><textarea id="dd-needs" oninput="saveIki()"></textarea></div>
+                <div class="deep-dive-card" style="border-left-color:#34C759"><label class="dd-title">Paid For</label><textarea id="dd-profit" oninput="saveIki()"></textarea></div>
+            </div>
         </section>
+
+        <section id="goals" class="tab-content"><div id="goal-matrix" class="space-y-4"></div></section>
     </main>
 
     <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-200 flex justify-around py-4 z-50">
-        <button onclick="showTab('attitudes', 'Weekly Tracker', this)" class="nav-btn flex flex-col items-center gap-1 text-blue-600"><span class="text-[10px] font-black uppercase tracking-tight">Tracker</span></button>
-        <button onclick="showTab('ikigai', 'Ikigai Center', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400"><span class="text-[10px] font-black uppercase tracking-tight">Ikigai</span></button>
-        <button onclick="showTab('goals', 'Vision 3x3', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400"><span class="text-[10px] font-black uppercase tracking-tight">Vision</span></button>
+        <button onclick="showTab('attitudes', 'Tracker', this)" class="nav-btn flex flex-col items-center gap-1 text-blue-600 font-bold text-[10px]">TRACKER</button>
+        <button onclick="showTab('ikigai', 'Ikigai', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-bold text-[10px]">IKIGAI</button>
+        <button onclick="showTab('goals', 'Vision', this)" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-bold text-[10px]">VISION</button>
     </nav>
 
     <script>
         let editMode = false;
-        let attitudes = JSON.parse(localStorage.getItem('attNames')) || ["Gratitude", "Focus"];
-        const cats = ["Perso", "Social", "Pro"];
-        const times = ["1M", "1Y", "10Y"];
+        let habits = JSON.parse(localStorage.getItem('habits')) || ["Gratitude", "Meditation"];
 
         function toggleEditMode() {
             editMode = !editMode;
             document.getElementById('edit-btn').innerText = editMode ? "Done" : "Edit";
-            ['love', 'skills', 'needs', 'profit'].forEach(id => {
-                document.getElementById('label-' + id).contentEditable = editMode;
-                document.getElementById('dd-'+id).disabled = !editMode;
+            ['love','skills','needs','profit'].forEach(id => {
+                document.getElementById('label-'+id).contentEditable = editMode;
             });
             renderAttitudes(); renderGoals();
         }
 
-        function autoShrink(el) {
-            let fontSize = 18; el.style.fontSize = fontSize + 'px';
-            while (el.scrollHeight > el.offsetHeight && fontSize > 8) { fontSize -= 1; el.style.fontSize = fontSize + 'px'; }
-        }
-
-        function saveIki() {
-            ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                localStorage.setItem('iki-v3-'+f, document.getElementById('label-'+f).innerText);
-                localStorage.setItem('dd-text-v2-'+f, document.getElementById('dd-'+f).value);
-            });
-        }
-
-        function loadIki() {
-            ['love', 'skills', 'needs', 'profit'].forEach(f => {
-                const circleVal = localStorage.getItem('iki-v3-'+f);
-                if (circleVal) { const el = document.getElementById('label-'+f); el.innerText = circleVal; autoShrink(el); }
-                document.getElementById('dd-'+f).value = localStorage.getItem('dd-text-v2-'+f) || '';
-            });
-        }
-
         function renderAttitudes() {
             const grid = document.getElementById('attitude-grid');
-            grid.innerHTML = attitudes.map((name, idx) => `
-                <tr><td class="p-3 text-left text-xs font-bold text-slate-700">${editMode ? `<button onclick="deleteAtt(${idx})" class="text-red-500 mr-1">✕</button>` : ''}${name}</td>
-                    ${['mon','tue','wed','thu','fri','sat','sun'].map(d => {
-                        const id = `chk-${name}-${d}`;
-                        return `<td><input type="checkbox" onchange="localStorage.setItem('${id}', this.checked)" ${localStorage.getItem(id)==='true'?'checked':''} class="w-5 h-5 rounded-full border-slate-300"></td>`;
-                    }).join('')}</tr>`).join('');
+            grid.innerHTML = habits.map((h, i) => `<tr><td class="p-3 text-left text-xs font-bold">${h}</td>${['m','t','w','th','f','s','su'].map(d => `<td><input type="checkbox" class="w-5 h-5"></td>`).join('')}</tr>`).join('');
         }
 
         function renderGoals() {
             const matrix = document.getElementById('goal-matrix');
-            matrix.innerHTML = cats.map(cat => `
-                <div class="grid grid-cols-3 gap-2">
-                    ${times.map(time => {
-                        const key = `v-${cat}-${time}`;
-                        const prog = localStorage.getItem(key+'-p') || "0";
-                        const text = localStorage.getItem(key+'-t') || '';
-                        return `<div id="card-${key}" class="prog-${prog} p-3 rounded-2xl border border-slate-100 shadow-sm">
-                            <div class="text-[8px] font-black text-slate-400 uppercase mb-1">${cat} • ${time}</div>
-                            <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3" class="text-slate-900" ${editMode ? '' : 'disabled'}>${text}</textarea>
-                            <input type="range" min="0" max="100" step="50" value="${prog}" oninput="updateProgress('${key}', this)" class="w-full h-1 mt-1">
-                        </div>`;
-                    }).join('')}</div>`).join('');
+            const cats = ["Perso", "Social", "Pro"];
+            const times = ["1M", "1Y", "10Y"];
+            matrix.innerHTML = cats.map(c => `<div class="grid grid-cols-3 gap-2">${times.map(t => {
+                const key = `v-${c}-${t}`;
+                const p = localStorage.getItem(key+'-p') || "0";
+                return `<div id="card-${key}" class="prog-${p} p-3 rounded-2xl border shadow-sm">
+                    <div class="text-[8px] font-black opacity-40 uppercase">${c} ${t}</div>
+                    <textarea oninput="localStorage.setItem('${key}-t', this.value)" rows="3">${localStorage.getItem(key+'-t')||''}</textarea>
+                    <input type="range" min="0" max="100" step="50" value="${p}" oninput="updateProg('${key}', this)">
+                </div>`}).join('')}</div>`).join('');
         }
 
-        function updateProgress(key, el) {
+        function updateProg(key, el) {
             localStorage.setItem(key+'-p', el.value);
-            document.getElementById('card-' + key).className = `prog-${el.value} p-3 rounded-2xl border border-slate-100 shadow-sm transition-all duration-300`;
+            document.getElementById('card-'+key).className = `prog-${el.value} p-3 rounded-2xl border shadow-sm transition-all`;
+        }
+
+        function saveIki() {
+            ['love','skills','needs','profit'].forEach(f => {
+                localStorage.setItem('iki-'+f, document.getElementById('label-'+f).innerText);
+                localStorage.setItem('dd-'+f, document.getElementById('dd-'+f).value);
+            });
+        }
+
+        function loadIki() {
+            ['love','skills','needs','profit'].forEach(f => {
+                document.getElementById('label-'+f).innerText = localStorage.getItem('iki-'+f) || f;
+                document.getElementById('dd-'+f).value = localStorage.getItem('dd-'+f) || '';
+            });
+        }
+
+        function exportData() {
+            const data = JSON.stringify(localStorage);
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'life-compass-backup.json'; a.click();
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = f => {
+                    const data = JSON.parse(f.target.result);
+                    Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+                    location.reload();
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
 
         function showTab(id, title, btn) {
@@ -185,7 +180,6 @@
             document.getElementById(id).classList.add('active');
             document.getElementById('tab-title').innerText = title;
             btn.classList.replace('text-slate-400', 'text-blue-600');
-            window.scrollTo(0,0);
         }
 
         renderAttitudes(); renderGoals(); loadIki();

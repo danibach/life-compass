@@ -168,7 +168,7 @@
 
         function renderGoals() {
             const matrix = document.getElementById('goal-matrix');
-            const cats = ["Perso", "Social", "Pro"];
+            const cats = ["Perso", "People", "Pro"];
             const times = ["1M", "1Y", "10Y"];
             matrix.innerHTML = cats.map(c => `<div class="grid grid-cols-3 gap-2">${times.map(t => {
                 const key = `v-${c}-${t}`;
